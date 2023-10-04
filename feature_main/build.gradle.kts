@@ -1,25 +1,20 @@
+import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.androidHilt)
     alias(libs.plugins.org.jetbrains.kotlin.kapt)
 }
 
 android {
-    namespace = "com.masliaiev.papuga"
+    namespace = "com.masliaiev.feature.main"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.masliaiev.papuga"
         minSdk = 28
-        targetSdk = 33
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -44,11 +39,6 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
 }
 
 dependencies {
@@ -71,13 +61,10 @@ dependencies {
     debugImplementation(libs.ui.test.manifest)
 
     implementation(project(path = ":core"))
-    implementation(project(path = ":api"))
-    implementation(project(path = ":feature_main"))
 
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation)
-
 
 
     implementation(libs.lifecycle.viewmodel.compose)
@@ -86,6 +73,4 @@ dependencies {
     //Coroutines
     implementation (libs.kotlinx.coroutines.core)
     implementation (libs.kotlinx.coroutines.android)
-
-
 }

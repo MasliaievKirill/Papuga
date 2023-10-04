@@ -1,4 +1,4 @@
-package com.masliaiev.papuga.ui.theme
+package com.masliaiev.core.theme
 
 import android.app.Activity
 import android.os.Build

@@ -15,3 +15,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "Papuga"
 include(":app")
+include(":core")
+include(":api")
+include(":utils")
+include(":feature_main")

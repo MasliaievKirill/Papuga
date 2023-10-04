@@ -1,4 +1,4 @@
-package com.masliaiev.papuga.ui.theme
+package com.masliaiev.core.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
