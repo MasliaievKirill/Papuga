@@ -7,11 +7,11 @@ plugins {
 
 android {
     namespace = "com.masliaiev.papuga"
-    compileSdk = 34
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.masliaiev.papuga"
-        minSdk = 28
+        minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -36,13 +36,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = libs.versions.jvmTarget.get().toString()
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get().toString()
     }
     packaging {
         resources {
@@ -52,6 +52,10 @@ android {
 }
 
 dependencies {
+    implementation(project(path = ":core"))
+    implementation(project(path = ":api"))
+    implementation(project(path = ":utils"))
+    implementation(project(path = ":feature_main"))
 
     implementation(libs.androidx.ktx)
     implementation(libs.lifecycle.runtime.ktx)
@@ -62,30 +66,16 @@ dependencies {
     implementation(libs.ui.tooling)
     implementation(libs.material3)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
-    androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation(libs.ui.test.junit4)
-    debugImplementation(libs.ui.tooling.preview)
-    debugImplementation(libs.ui.test.manifest)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation (libs.androidx.navigation)
 
-    implementation(project(path = ":core"))
-    implementation(project(path = ":api"))
-    implementation(project(path = ":feature_main"))
+    implementation (libs.kotlinx.coroutines.core)
+    implementation (libs.kotlinx.coroutines.android)
 
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation)
 
-
-
-    implementation(libs.lifecycle.viewmodel.compose)
-    implementation (libs.androidx.navigation)
-//    implementation (libs.lifecycle.viewmodel.ktx)
-    //Coroutines
-    implementation (libs.kotlinx.coroutines.core)
-    implementation (libs.kotlinx.coroutines.android)
-
-
+    debugImplementation(libs.ui.tooling.preview)
+    debugImplementation(libs.ui.test.manifest)
 }

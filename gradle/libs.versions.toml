@@ -1,23 +1,26 @@
 [versions]
-kotlinx-coroutines-core = "1.6.4"
+compileSdk = "34"
+minSdk = "28"
+jvmTarget = "17"
+kotlinCompilerExtensionVersion = "1.4.3"
 ktx = "1.12.0"
 agp = "8.1.2"
-junit = "4.13.2"
-androidx-test-ext-junit = "1.1.5"
-espresso-core = "3.5.1"
-appcompat = "1.6.1"
-
 kotlin = "1.8.10"
+appcompat = "1.6.1"
+kotlinx-coroutines-core = "1.6.4"
 lifecycle-runtime-ktx = "2.6.2"
 activity-compose = "1.7.2"
 compose-bom = "2023.09.02"
 coil_version = "2.4.0"
 retrofit_version = '2.9.0'
-gson_version = '2.10'
 hilt_version = '2.44'
 androidx_hilt = "1.0.0"
 compose_nav = "2.7.3"
 material = "1.9.0"
+secrets = "2.0.1"
+junit = "4.13.2"
+androidx-test-ext-junit = "1.1.5"
+espresso-core = "3.5.1"
 
 [libraries]
 androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
@@ -50,7 +53,6 @@ coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil_versio
 # Retrofit
 retrofit_core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit_version" }
 retrofit_conveter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit_version" }
-retrofit_gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson_version" }
 
 # Hilt
 hilt = { group  = "com.google.dagger", name = "hilt-android", version.ref = "hilt_version" }
@@ -72,3 +74,4 @@ com-android-library = { id = "com.android.library", version.ref = "agp" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 androidHilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt_version" }
 org-jetbrains-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets"}

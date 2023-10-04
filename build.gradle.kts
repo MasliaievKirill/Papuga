@@ -4,4 +4,5 @@ plugins {
     alias(libs.plugins.com.android.library) apply false
     alias(libs.plugins.androidHilt) apply false
     alias(libs.plugins.org.jetbrains.kotlin.kapt) apply false
+    alias(libs.plugins.secrets.gradle.plugin) apply false
 }
