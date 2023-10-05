@@ -42,4 +42,5 @@ android {
 dependencies {
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.conveter)
+    implementation(libs.okhttp3.logging.interceptor)
 }

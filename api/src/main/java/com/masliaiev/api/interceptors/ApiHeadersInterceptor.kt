@@ -9,13 +9,11 @@ class ApiHeadersInterceptor: Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
 
-        val requestUrl = originalRequest.url().newBuilder()
-            .addQueryParameter(BuildConfig.HEADER_API_KEY, BuildConfig.API_KEY)
-            .addQueryParameter(BuildConfig.HEADER_API_HOST, BuildConfig.API_HOST)
+        val newRequest = originalRequest.newBuilder()
+            .addHeader(BuildConfig.HEADER_API_KEY, BuildConfig.API_KEY)
+            .addHeader(BuildConfig.HEADER_API_HOST, BuildConfig.API_HOST)
             .build()
 
-        val request = originalRequest.newBuilder().url(requestUrl).build()
-
-        return chain.proceed(request)
+        return chain.proceed(newRequest)
     }
 }

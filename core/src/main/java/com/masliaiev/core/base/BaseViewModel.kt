@@ -1,5 +1,6 @@
 package com.masliaiev.core.base
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -13,4 +14,10 @@ abstract class BaseViewModel<S : ScreenState, E : Event, M : Message> : ViewMode
     val eventsFlow = MutableSharedFlow<E>()
 
     val messageFlow = MutableSharedFlow<M>()
+
+    protected fun updateState(
+        block: (currentState: MutableState<S?>) -> Unit
+    ) {
+        block.invoke(_screenState)
+    }
 }
