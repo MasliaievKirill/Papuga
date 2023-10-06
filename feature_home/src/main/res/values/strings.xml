@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tracks_count">%s tracks</string>
+    <string name="fans_count">%s fans</string>
+    <string name="title_playlists">Playlists</string>
+</resources>

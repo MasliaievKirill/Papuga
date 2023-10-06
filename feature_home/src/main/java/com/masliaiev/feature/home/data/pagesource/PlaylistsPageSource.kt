@@ -1,13 +1,13 @@
-package com.masliaiev.feature.main.data.pagesource
+package com.masliaiev.feature.home.data.pagesource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.masliaiev.core.models.Playlist
 import com.masliaiev.core.models.response.Error
-import com.masliaiev.feature.main.data.provider.MainApiProvider
+import com.masliaiev.feature.home.data.provider.HomeApiProvider
 
 class PlaylistsPageSource(
-    private val provider: MainApiProvider
+    private val provider: HomeApiProvider
 ) : PagingSource<Int, Playlist>() {
 
     override fun getRefreshKey(state: PagingState<Int, Playlist>): Int {

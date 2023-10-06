@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.masliaiev.feature.main"
+    namespace = "com.masliaiev.feature.home"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -42,7 +42,6 @@ android {
 
 dependencies {
     implementation(project(path = ":core"))
-    api(project(path = ":feature_home"))
 
     implementation(libs.androidx.ktx)
     implementation(libs.lifecycle.runtime.ktx)
@@ -65,6 +64,8 @@ dependencies {
 
     implementation(libs.androidx.paging)
     implementation(libs.androidx.paging.compose)
+
+    implementation(libs.coil)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

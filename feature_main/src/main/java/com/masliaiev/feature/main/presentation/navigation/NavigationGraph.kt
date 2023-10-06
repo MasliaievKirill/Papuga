@@ -8,7 +8,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.masliaiev.feature.main.presentation.MainViewModel
+import com.masliaiev.feature.home.presentation.HomeScreen
+import com.masliaiev.feature.home.presentation.HomeViewModel
 
 @Composable
 fun NavigationGraph(
@@ -37,13 +38,13 @@ private fun NavGraphBuilder.homeGraph(
 ) {
     navigation(startDestination = Routes.Home.route, route = Routes.HomeGraph.route) {
 
-        composable(Routes.Home.route) {
-            val viewModel = hiltViewModel<MainViewModel>()
-
+        composable(route = Routes.Home.route, enterTransition = null, exitTransition = null) {
+            val viewModel = hiltViewModel<HomeViewModel>()
+            HomeScreen(viewModel = viewModel)
         }
 
-        composable(Routes.Track.route) {
-            val viewModel = hiltViewModel<MainViewModel>()
+        composable(Routes.Playlist.route) {
+//            val viewModel = hiltViewModel<MainViewModel>()
 
         }
     }
@@ -54,13 +55,13 @@ private fun NavGraphBuilder.searchGraph(
 ) {
     navigation(startDestination = Routes.Search.route, route = Routes.SearchGraph.route) {
 
-        composable(Routes.Search.route) {
-            val viewModel = hiltViewModel<MainViewModel>()
+        composable(route = Routes.Search.route, enterTransition = null, exitTransition = null) {
+//            val viewModel = hiltViewModel<MainViewModel>()
 
         }
 
         composable(Routes.Track.route) {
-            val viewModel = hiltViewModel<MainViewModel>()
+//            val viewModel = hiltViewModel<MainViewModel>()
 
         }
     }

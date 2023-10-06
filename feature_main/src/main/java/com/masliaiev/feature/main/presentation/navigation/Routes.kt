@@ -8,6 +8,8 @@ sealed class Routes(val route: String){
 
     object Search: Routes("search")
 
+    object Playlist: Routes("playlist")
+
     object Track: Routes("track")
 
 }
