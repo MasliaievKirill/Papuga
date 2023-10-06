@@ -8,7 +8,7 @@ class MainRepositoryImpl @Inject constructor(
     private val provider: MainApiProvider
 ) : MainRepository {
 
-    override fun start() {
-        provider.start()
+    override suspend fun foo() {
+
     }
 }

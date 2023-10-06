@@ -76,6 +76,8 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation)
 
+    implementation(libs.retrofit.core)
+
     debugImplementation(libs.ui.tooling.preview)
     debugImplementation(libs.ui.test.manifest)
 }

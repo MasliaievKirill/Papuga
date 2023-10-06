@@ -2,5 +2,5 @@ package com.masliaiev.feature.main.data.provider
 
 interface MainApiProvider {
 
-    fun start()
+    suspend fun foo()
 }

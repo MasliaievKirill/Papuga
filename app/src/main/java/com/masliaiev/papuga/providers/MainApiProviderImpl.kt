@@ -6,9 +6,9 @@ import javax.inject.Inject
 
 class MainApiProviderImpl @Inject constructor(
     private val apiService: ApiService
-): MainApiProvider {
+) : MainApiProvider {
 
-    override fun start() {
+    override suspend fun foo() {
 
     }
 }

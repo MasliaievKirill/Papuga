@@ -42,6 +42,8 @@ android {
 
 dependencies {
     implementation(project(path = ":core"))
+    api(project(path = ":feature_home"))
+    api(project(path = ":feature_playlist"))
 
     implementation(libs.androidx.ktx)
     implementation(libs.lifecycle.runtime.ktx)
