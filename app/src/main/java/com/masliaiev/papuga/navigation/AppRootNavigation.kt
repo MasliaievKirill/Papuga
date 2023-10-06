@@ -14,8 +14,9 @@ import com.masliaiev.feature.main.presentation.MainViewModel
 fun AppRootNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = RootRoutes.Main.route
-){
+    startDestination: String = RootRoutes.Main.route,
+    onShareClick: (url: String) -> Unit
+) {
     NavHost(
         modifier = modifier,
         navController = navController,
@@ -24,7 +25,8 @@ fun AppRootNavigation(
         composable(RootRoutes.Main.route) {
             val viewModel: MainViewModel = hiltViewModel()
             MainScreen(
-                viewModel = viewModel
+                viewModel = viewModel,
+                onShareClick = onShareClick
             )
         }
     }

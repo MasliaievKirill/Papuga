@@ -10,12 +10,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.masliaiev.feature.home.presentation.HomeScreen
 import com.masliaiev.feature.home.presentation.HomeViewModel
+import com.masliaiev.feature.playlist.presentation.PlaylistScreen
+import com.masliaiev.feature.playlist.presentation.PlaylistViewModel
 
 @Composable
 fun NavigationGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    startDestination: String = Routes.HomeGraph.route
+    startDestination: String = Routes.HomeGraph.route,
+    onShareClick: (url: String) -> Unit
 ) {
     NavHost(
         modifier = modifier,
@@ -24,7 +27,8 @@ fun NavigationGraph(
     ) {
 
         homeGraph(
-            navController = navController
+            navController = navController,
+            onShareClick = onShareClick
         )
 
         searchGraph(
@@ -34,18 +38,40 @@ fun NavigationGraph(
 }
 
 private fun NavGraphBuilder.homeGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    onShareClick: (url: String) -> Unit
 ) {
     navigation(startDestination = Routes.Home.route, route = Routes.HomeGraph.route) {
 
-        composable(route = Routes.Home.route, enterTransition = null, exitTransition = null) {
-            val viewModel = hiltViewModel<HomeViewModel>()
-            HomeScreen(viewModel = viewModel)
+        composable(route = Routes.Home.route) {
+            val viewModel: HomeViewModel = hiltViewModel()
+            HomeScreen(
+                viewModel = viewModel,
+                onPlaylistClick = { playlistId ->
+                    navController.navigate(
+                        Routes.Playlist.getRouteWithArgument(playlistId)
+                    )
+                }
+            )
         }
 
-        composable(Routes.Playlist.route) {
-//            val viewModel = hiltViewModel<MainViewModel>()
+        composable(Routes.Playlist.route) { backStackEntry ->
+            val viewModel: PlaylistViewModel = hiltViewModel()
+            backStackEntry.arguments?.let {
+                val playlistId = it.getString(Routes.playlistIdArgument)
 
+                playlistId?.let {
+                    PlaylistScreen(
+                        viewModel = viewModel,
+                        playlistId = it,
+                        onShareClick = onShareClick,
+                        onBackClick = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+
+            }
         }
     }
 }
@@ -55,7 +81,7 @@ private fun NavGraphBuilder.searchGraph(
 ) {
     navigation(startDestination = Routes.Search.route, route = Routes.SearchGraph.route) {
 
-        composable(route = Routes.Search.route, enterTransition = null, exitTransition = null) {
+        composable(route = Routes.Search.route) {
 //            val viewModel = hiltViewModel<MainViewModel>()
 
         }

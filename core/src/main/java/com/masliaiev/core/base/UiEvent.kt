@@ -1,3 +1,3 @@
 package com.masliaiev.core.base
 
-interface Message
+interface UiEvent

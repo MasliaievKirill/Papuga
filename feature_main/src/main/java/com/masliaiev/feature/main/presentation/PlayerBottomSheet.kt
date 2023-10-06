@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -38,20 +39,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.masliaiev.core.theme.Pink80
 import com.masliaiev.core.theme.Purple80
+import com.masliaiev.core.theme.PurpleGrey80
 import com.masliaiev.core.R as RCore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerBottomSheet(
-    bottomSheetState: SheetState
+    bottomSheetState: SheetState,
+    maxHeight: Dp
 ) {
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
+            .height(maxHeight)
             .background(Pink80),
         contentAlignment = Alignment.TopCenter
     ) {
@@ -63,7 +68,8 @@ fun PlayerBottomSheet(
         ) {
             Row(
                 modifier = Modifier
-                    .padding(8.dp),
+                    .padding(8.dp)
+                    .background(Pink80),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -106,6 +112,7 @@ fun PlayerBottomSheet(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(PurpleGrey80)
                     .statusBarsPadding()
             ) {
                 Box(
@@ -166,7 +173,7 @@ fun PlayerBottomSheet(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Purple80)
+                            .background(Pink80)
                             .navigationBarsPadding()
                     ) {
                         Row(
@@ -220,7 +227,7 @@ private fun PlayerButton(
         modifier = if (enableCircleShape) {
             Modifier
                 .background(
-                    color = Color.White,
+                    color = Purple80,
                     shape = CircleShape
                 )
         } else {
@@ -246,6 +253,7 @@ private fun PlayerBottomSheetPreview() {
         bottomSheetState = SheetState(
             skipPartiallyExpanded = false,
             initialValue = SheetValue.Expanded
-        )
+        ),
+        maxHeight = 800.dp
     )
 }

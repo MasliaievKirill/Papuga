@@ -10,25 +10,16 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 @Composable
-fun <S : ScreenState, E : Event, M : Message> BaseScreen(
-    viewModel: BaseViewModel<S, E, M>,
-    handleEvent: (event: E) -> Unit = {},
-    handleMessage: (message: M) -> Unit = {},
+fun <S : ScreenState, U : UiEvent, V : ViewModelEvent> BaseScreen(
+    viewModel: BaseViewModel<S, U, V>,
+    handleViewModelEvent: (event: V) -> Unit = {},
     content: @Composable (screenState: S?) -> Unit
 ) {
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.eventsFlow
+        viewModel.viewModelEventsFlow
             .onEach { event ->
-                handleEvent.invoke(event)
-            }
-            .launchIn(this)
-    }
-
-    LaunchedEffect(key1 = Unit) {
-        viewModel.messageFlow
-            .onEach { message ->
-                handleMessage.invoke(message)
+                handleViewModelEvent.invoke(event)
             }
             .launchIn(this)
     }

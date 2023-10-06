@@ -1,5 +1,6 @@
 package com.masliaiev.feature.home.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,6 +39,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
@@ -48,20 +52,19 @@ import com.masliaiev.core.R as RCore
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel
+    viewModel: HomeViewModel,
+    onPlaylistClick: (playlistId: String) -> Unit
 ) {
     BaseScreen(
         viewModel = viewModel,
-        handleMessage = {
-            //TODO handle message
-        },
-        handleEvent = {
+        handleViewModelEvent = {
             //TODO handle event
         }
     ) { screenState ->
         screenState?.let {
             HomeScreenContent(
-                playlists = screenState.playlists
+                playlists = screenState.playlists,
+                onPlaylistClick = onPlaylistClick
             )
         }
 
@@ -71,7 +74,8 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeScreenContent(
-    playlists: Flow<PagingData<Playlist>>?
+    playlists: Flow<PagingData<Playlist>>?,
+    onPlaylistClick: (playlistId: String) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
@@ -109,29 +113,38 @@ private fun HomeScreenContent(
         },
 
         ) { paddingValues ->
+
         playlists?.let {
             val lazyPagingItems = playlists.collectAsLazyPagingItems()
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(top = paddingValues.calculateTopPadding()),
                 contentAlignment = Alignment.Center
             ) {
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 8.dp),
-                    columns = GridCells.Fixed(2),
-                    contentPadding = WindowInsets.systemBars.asPaddingValues()
-                ) {
-                    items(
-                        count = lazyPagingItems.itemCount
-                    ) { index ->
-                        // As the standard items call provides only the index, we get the item
-                        // directly from our lazyPagingItems
-                        val item = lazyPagingItems[index]
-                        item?.let {
-                            Playlist(playlist = it)
+                if (lazyPagingItems.loadState.refresh == LoadState.Loading){
+                    CircularProgressIndicator()
+                } else {
+                    LazyVerticalGrid(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 8.dp),
+                        columns = GridCells.Fixed(2),
+                        contentPadding = WindowInsets.systemBars.asPaddingValues()
+                    ) {
+                        items(
+                            count = lazyPagingItems.itemCount
+                        ) { index ->
+                            // As the standard items call provides only the index, we get the item
+                            // directly from our lazyPagingItems
+                            val item = lazyPagingItems[index]
+                            item?.let {
+                                Playlist(
+                                    playlist = it,
+                                    onPlaylistClick = onPlaylistClick
+                                )
+                            }
                         }
                     }
                 }
@@ -144,11 +157,15 @@ private fun HomeScreenContent(
 
 @Composable
 private fun Playlist(
-    playlist: Playlist
+    playlist: Playlist,
+    onPlaylistClick: (playlistId: String) -> Unit
 ) {
     Column(
         modifier = Modifier
             .padding(8.dp)
+            .clickable {
+                onPlaylistClick.invoke(playlist.id)
+            }
     ) {
         Card(
             shape = RoundedCornerShape(4.dp)
@@ -215,6 +232,7 @@ private fun Playlist(
 @Composable
 private fun MainScreenPreview() {
     HomeScreenContent(
-        playlists = null
+        playlists = null,
+        onPlaylistClick = {}
     )
 }

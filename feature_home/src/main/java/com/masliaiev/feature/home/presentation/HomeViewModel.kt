@@ -1,22 +1,20 @@
 package com.masliaiev.feature.home.presentation
 
-import androidx.lifecycle.viewModelScope
 import com.masliaiev.core.base.BaseViewModel
-import com.masliaiev.core.base.Event
-import com.masliaiev.core.base.Message
+import com.masliaiev.core.base.UiEvent
+import com.masliaiev.core.base.ViewModelEvent
 import com.masliaiev.feature.home.domain.usecases.GetPlaylistsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val startUseCase: GetPlaylistsUseCase
-) : BaseViewModel<HomeScreenState, Event, Message>() {
+    private val getPlaylistsUseCase: GetPlaylistsUseCase
+) : BaseViewModel<HomeScreenState, UiEvent, ViewModelEvent>() {
 
     init {
-        viewModelScope.launch {
-            val flow = startUseCase.getPlaylists()
+        launch {
+            val flow = getPlaylistsUseCase.getPlaylists()
             updateState { currentState ->
                 currentState.value = HomeScreenState(
                     playlists = flow
@@ -24,4 +22,6 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+    override fun onUiEvent(uiEvent: UiEvent) = Unit
 }

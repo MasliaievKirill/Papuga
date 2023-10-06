@@ -3,9 +3,16 @@ package com.masliaiev.feature.main.presentation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -36,33 +43,34 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.masliaiev.core.base.BaseScreen
+import com.masliaiev.core.theme.PurpleGrey80
 import com.masliaiev.feature.main.R
 import com.masliaiev.feature.main.presentation.navigation.NavigationGraph
 import com.masliaiev.feature.main.presentation.navigation.Routes
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel
+    viewModel: MainViewModel,
+    onShareClick: (url: String) -> Unit
 ) {
     BaseScreen(
         viewModel = viewModel,
-        handleMessage = {
-            //TODO handle message
-        },
-        handleEvent = {
+        handleViewModelEvent = {
             //TODO handle event
         }
     ) { screenState ->
-        MainScreenContent()
+        MainScreenContent(
+            onShareClick = onShareClick
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScreenContent(
-
+    onShareClick: (url: String) -> Unit
 ) {
-    val navigationBarVisibility = remember {
+    val bottomSheetIsExpanded = remember {
         mutableStateOf(true)
     }
     val navigationBarHeight = remember {
@@ -70,20 +78,29 @@ private fun MainScreenContent(
     }
     val navController = rememberNavController()
     val scaffoldState = rememberBottomSheetScaffoldState()
+    val density = LocalDensity.current
 
     LaunchedEffect(key1 = scaffoldState.bottomSheetState.currentValue) {
-        navigationBarVisibility.value =
-            scaffoldState.bottomSheetState.currentValue != SheetValue.Expanded
+        bottomSheetIsExpanded.value =
+            scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded
     }
 
-    Box(
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomCenter
     ) {
         BottomSheetScaffold(
             scaffoldState = scaffoldState,
             sheetContent = {
                 PlayerBottomSheet(
-                    bottomSheetState = scaffoldState.bottomSheetState
+                    bottomSheetState = scaffoldState.bottomSheetState,
+                    maxHeight = with(density) {
+                        this@BoxWithConstraints.constraints.maxHeight.toDp().minus(
+                            WindowInsets.statusBars
+                                .asPaddingValues()
+                                .calculateTopPadding()
+                        )
+                    }
                 )
             },
             sheetPeekHeight = navigationBarHeight.value + 66.dp,
@@ -94,15 +111,15 @@ private fun MainScreenContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = it.calculateBottomPadding()),
-                navController = navController
+                navController = navController,
+                onShareClick = onShareClick
             )
         }
 
         val navGraphs: List<Routes> = listOf(Routes.HomeGraph, Routes.SearchGraph)
-        val density = LocalDensity.current
 
         AnimatedVisibility(
-            visible = navigationBarVisibility.value,
+            visible = !bottomSheetIsExpanded.value,
             enter = fadeIn(),
             exit = fadeOut()
         ) {
@@ -152,6 +169,28 @@ private fun MainScreenContent(
                 }
             }
         }
+
+        AnimatedVisibility(
+            visible = bottomSheetIsExpanded.value,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(PurpleGrey80)
+                        .fillMaxWidth()
+                        .height(
+                            WindowInsets.statusBars
+                                .asPaddingValues()
+                                .calculateTopPadding()
+                        )
+                )
+            }
+        }
     }
 }
 
@@ -159,6 +198,6 @@ private fun MainScreenContent(
 @Composable
 private fun MainScreenPreview() {
     MainScreenContent(
-
+        onShareClick = {}
     )
 }
