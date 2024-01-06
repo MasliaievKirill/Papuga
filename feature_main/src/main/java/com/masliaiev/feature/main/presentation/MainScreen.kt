@@ -1,5 +1,6 @@
 package com.masliaiev.feature.main.presentation
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,24 +45,43 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.masliaiev.core.base.BaseScreen
-import com.masliaiev.core.theme.PurpleGrey80
+import com.masliaiev.core.constants.EmptyConstants
+import com.masliaiev.core.models.Album
+import com.masliaiev.core.models.Artist
+import com.masliaiev.core.models.Track
+import com.masliaiev.core.theme.Magnolia
 import com.masliaiev.feature.main.R
 import com.masliaiev.feature.main.presentation.navigation.NavigationGraph
 import com.masliaiev.feature.main.presentation.navigation.Routes
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel,
-    onShareClick: (url: String) -> Unit
+    viewModel: MainViewModel
 ) {
+    val context = LocalContext.current
+
     BaseScreen(
         viewModel = viewModel,
-        handleViewModelEvent = {
-            //TODO handle event
+        handleViewModelEvent = { event ->
+            when (event) {
+                is MainViewModelEvent.ShowPlayerErrorToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     ) { screenState ->
         MainScreenContent(
-            onShareClick = onShareClick
+            currentTrack = screenState?.track,
+            isPlaying = screenState?.isPlaying ?: false,
+            playPauseAvailable = screenState?.playPauseAvailable ?: false,
+            seekToNextAvailable = screenState?.seekToNextAvailable ?: false,
+            seekToPreviousAvailable = screenState?.seekToPreviousAvailable ?: false,
+            currentTrackFullDuration = screenState?.currentTrackFullDuration
+                ?: EmptyConstants.EMPTY_STRING,
+            currentTrackCurrentDuration = screenState?.currentTrackCurrentDuration
+                ?: EmptyConstants.EMPTY_STRING,
+            progress = screenState?.progress ?: EmptyConstants.EMPTY_FLOAT,
+            onUiEvent = viewModel::onUiEvent
         )
     }
 }
@@ -68,7 +89,15 @@ fun MainScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScreenContent(
-    onShareClick: (url: String) -> Unit
+    currentTrack: Track?,
+    isPlaying: Boolean,
+    playPauseAvailable: Boolean,
+    seekToNextAvailable: Boolean,
+    seekToPreviousAvailable: Boolean,
+    currentTrackFullDuration: String,
+    currentTrackCurrentDuration: String,
+    progress: Float,
+    onUiEvent: (MainUiEvent) -> Unit
 ) {
     val bottomSheetIsExpanded = remember {
         mutableStateOf(true)
@@ -100,10 +129,43 @@ private fun MainScreenContent(
                                 .asPaddingValues()
                                 .calculateTopPadding()
                         )
+                    },
+                    currentTrack = currentTrack,
+                    isPlaying = isPlaying,
+                    playPauseAvailable = playPauseAvailable,
+                    seekToNextAvailable = seekToNextAvailable,
+                    seekToPreviousAvailable = seekToPreviousAvailable,
+                    trackFullDuration = currentTrackFullDuration,
+                    trackCurrentDuration = currentTrackCurrentDuration,
+                    progress = progress,
+                    playOrPause = {
+                        onUiEvent.invoke(
+                            MainUiEvent.PlayOrPause
+                        )
+                    },
+                    seekToNext = {
+                        onUiEvent.invoke(
+                            MainUiEvent.SeekToNext
+                        )
+                    },
+                    seekToPrevious = {
+                        onUiEvent.invoke(
+                            MainUiEvent.SeekToPrevious
+                        )
+                    },
+                    onSliderValueChange = {
+                        onUiEvent.invoke(
+                            MainUiEvent.OnPlayerSliderValueChange(it)
+                        )
+                    },
+                    onSliderValueChangeFinished = {
+                        onUiEvent.invoke(
+                            MainUiEvent.OnPlayerSliderValueChangeFinished
+                        )
                     }
                 )
             },
-            sheetPeekHeight = navigationBarHeight.value + 66.dp,
+            sheetPeekHeight = currentTrack?.let { navigationBarHeight.value + 70.dp } ?: 0.dp,
             sheetShape = RoundedCornerShape(0.dp),
             sheetDragHandle = null
         ) {
@@ -112,7 +174,8 @@ private fun MainScreenContent(
                     .fillMaxSize()
                     .padding(bottom = it.calculateBottomPadding()),
                 navController = navController,
-                onShareClick = onShareClick
+                playerIsVisible = currentTrack != null,
+                navigationBarHeight = navigationBarHeight.value
             )
         }
 
@@ -181,7 +244,7 @@ private fun MainScreenContent(
             ) {
                 Box(
                     modifier = Modifier
-                        .background(PurpleGrey80)
+                        .background(Magnolia)
                         .fillMaxWidth()
                         .height(
                             WindowInsets.statusBars
@@ -198,6 +261,36 @@ private fun MainScreenContent(
 @Composable
 private fun MainScreenPreview() {
     MainScreenContent(
-        onShareClick = {}
+        currentTrack = Track(
+            id = "131",
+            title = "Track title",
+            titleShort = "Short t",
+            preview = "",
+            shareUrl = "",
+            duration = "345",
+            explicitLyrics = true,
+            artist = Artist(
+                id = "111",
+                name = "Artist Name",
+                shareUrl = "",
+                mediumPictureUrl = null,
+                bigPictureUrl = null
+            ),
+            album = Album(
+                id = "323",
+                title = "Album title",
+                smallCoverUrl = null,
+                mediumCoverUrl = null,
+                bigCoverUrl = null
+            )
+        ),
+        isPlaying = false,
+        playPauseAvailable = true,
+        seekToNextAvailable = true,
+        seekToPreviousAvailable = false,
+        currentTrackFullDuration = "00:00",
+        currentTrackCurrentDuration = "00:00",
+        progress = 0.0f,
+        onUiEvent = {}
     )
 }

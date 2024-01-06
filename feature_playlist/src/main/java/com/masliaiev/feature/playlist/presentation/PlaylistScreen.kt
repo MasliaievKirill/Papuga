@@ -1,5 +1,6 @@
 package com.masliaiev.feature.playlist.presentation
 
+import android.app.Activity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
@@ -34,12 +36,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.masliaiev.core.base.BaseScreen
 import com.masliaiev.core.constants.EmptyConstants
+import com.masliaiev.core.extensions.onShareClick
 import com.masliaiev.core.models.Album
 import com.masliaiev.core.models.Artist
 import com.masliaiev.core.models.Playlist
@@ -57,7 +64,8 @@ import com.masliaiev.feature.playlist.R
 fun PlaylistScreen(
     viewModel: PlaylistViewModel,
     playlistId: String,
-    onShareClick: (url: String) -> Unit,
+    playerIsVisible: Boolean,
+    navigationBarHeight: Dp,
     onBackClick: () -> Unit
 ) {
     BaseScreen(
@@ -69,7 +77,8 @@ fun PlaylistScreen(
         PlaylistScreenContent(
             playlist = screenState?.playlist,
             playlistId = playlistId,
-            onShareClick = onShareClick,
+            playerIsVisible = playerIsVisible,
+            navigationBarHeight = navigationBarHeight,
             onBackClick = onBackClick,
             onUiEvent = viewModel::onUiEvent
         )
@@ -81,11 +90,13 @@ fun PlaylistScreen(
 private fun PlaylistScreenContent(
     playlist: Playlist?,
     playlistId: String,
-    onShareClick: (url: String) -> Unit,
+    playerIsVisible: Boolean,
+    navigationBarHeight: Dp,
     onBackClick: () -> Unit,
     onUiEvent: (PlaylistUiEvent) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = Unit) {
         onUiEvent(
@@ -121,7 +132,7 @@ private fun PlaylistScreenContent(
                         IconButton(
                             onClick = {
                                 playlist.shareUrl?.let { url ->
-                                    onShareClick.invoke(url)
+                                    if (context is Activity) context.onShareClick(url)
                                 }
                             }
                         ) {
@@ -131,6 +142,32 @@ private fun PlaylistScreenContent(
                                 contentDescription = EmptyConstants.EMPTY_STRING
                             )
                         }
+                    }
+                }
+            )
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                modifier = if (playerIsVisible) {
+                    Modifier
+                } else {
+                    Modifier.padding(bottom = navigationBarHeight)
+                },
+                text = {
+                    Text(text = "Play all")
+                },
+                icon = {
+                    Icon(
+                        painter = painterResource(com.masliaiev.core.R.drawable.ic_play),
+                        contentDescription = null
+                    )
+                },
+                expanded = scrollBehavior.state.collapsedFraction == EmptyConstants.EMPTY_FLOAT,
+                onClick = {
+                    playlist?.tracks?.data?.let {
+                        onUiEvent.invoke(
+                            PlaylistUiEvent.OnPlayPlaylistClick(it)
+                        )
                     }
                 }
             )
@@ -204,7 +241,9 @@ private fun PlaylistScreenContent(
                             track = track,
                             index = index,
                             onClick = {
-
+                                onUiEvent.invoke(
+                                    PlaylistUiEvent.OnTrackClick(track)
+                                )
                             },
                             onMoreClick = {
 
@@ -243,6 +282,7 @@ private fun MainScreenPreview() {
                         id = "131",
                         title = "Track title",
                         titleShort = "Short t",
+                        preview = "",
                         shareUrl = "",
                         duration = "345",
                         explicitLyrics = false,
@@ -256,6 +296,7 @@ private fun MainScreenPreview() {
                         album = Album(
                             id = "323",
                             title = "Album title",
+                            smallCoverUrl = null,
                             mediumCoverUrl = null,
                             bigCoverUrl = null
                         )
@@ -264,6 +305,7 @@ private fun MainScreenPreview() {
                         id = "131",
                         title = "Track title",
                         titleShort = "Short t",
+                        preview = "",
                         shareUrl = "",
                         duration = "345",
                         explicitLyrics = false,
@@ -277,6 +319,7 @@ private fun MainScreenPreview() {
                         album = Album(
                             id = "323",
                             title = "Album title",
+                            smallCoverUrl = null,
                             mediumCoverUrl = null,
                             bigCoverUrl = null
                         )
@@ -285,6 +328,7 @@ private fun MainScreenPreview() {
                         id = "131",
                         title = "Track title",
                         titleShort = "Short t",
+                        preview = "",
                         shareUrl = "",
                         duration = "345",
                         explicitLyrics = true,
@@ -298,6 +342,7 @@ private fun MainScreenPreview() {
                         album = Album(
                             id = "323",
                             title = "Album title",
+                            smallCoverUrl = null,
                             mediumCoverUrl = null,
                             bigCoverUrl = null
                         )
@@ -306,6 +351,7 @@ private fun MainScreenPreview() {
                         id = "131",
                         title = "Track title",
                         titleShort = "Short t",
+                        preview = "",
                         shareUrl = "",
                         duration = "345",
                         explicitLyrics = false,
@@ -319,6 +365,7 @@ private fun MainScreenPreview() {
                         album = Album(
                             id = "323",
                             title = "Album title",
+                            smallCoverUrl = null,
                             mediumCoverUrl = null,
                             bigCoverUrl = null
                         )
@@ -327,6 +374,7 @@ private fun MainScreenPreview() {
                         id = "131",
                         title = "Track title",
                         titleShort = "Short t",
+                        preview = "",
                         shareUrl = "",
                         duration = "345",
                         explicitLyrics = true,
@@ -340,6 +388,7 @@ private fun MainScreenPreview() {
                         album = Album(
                             id = "323",
                             title = "Album title",
+                            smallCoverUrl = null,
                             mediumCoverUrl = null,
                             bigCoverUrl = null
                         )
@@ -348,7 +397,8 @@ private fun MainScreenPreview() {
             )
         ),
         playlistId = "",
-        onShareClick = {},
+        playerIsVisible = false,
+        navigationBarHeight = 60.dp,
         onBackClick = {},
         onUiEvent = {}
     )

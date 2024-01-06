@@ -13,6 +13,9 @@ data class TrackDto(
     @SerializedName("title_short")
     @Expose
     val titleShort: String,
+    @SerializedName("preview")
+    @Expose
+    val preview: String,
     @SerializedName("share")
     @Expose
     val shareUrl: String?,
