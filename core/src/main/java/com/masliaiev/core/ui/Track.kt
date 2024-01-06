@@ -117,6 +117,7 @@ private fun TrackPreview() {
             id = "131",
             title = "Track title",
             titleShort = "Short t",
+            preview = "",
             shareUrl = "",
             duration = "345",
             explicitLyrics = false,
@@ -130,6 +131,7 @@ private fun TrackPreview() {
             album = Album(
                 id = "323",
                 title = "Album title",
+                smallCoverUrl = null,
                 mediumCoverUrl = null,
                 bigCoverUrl = null
             )

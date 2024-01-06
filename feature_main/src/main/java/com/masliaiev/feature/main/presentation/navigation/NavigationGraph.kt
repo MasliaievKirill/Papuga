@@ -2,6 +2,7 @@ package com.masliaiev.feature.main.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -18,7 +19,8 @@ fun NavigationGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     startDestination: String = Routes.HomeGraph.route,
-    onShareClick: (url: String) -> Unit
+    playerIsVisible: Boolean,
+    navigationBarHeight: Dp
 ) {
     NavHost(
         modifier = modifier,
@@ -28,7 +30,8 @@ fun NavigationGraph(
 
         homeGraph(
             navController = navController,
-            onShareClick = onShareClick
+            playerIsVisible = playerIsVisible,
+            navigationBarHeight = navigationBarHeight
         )
 
         searchGraph(
@@ -39,7 +42,8 @@ fun NavigationGraph(
 
 private fun NavGraphBuilder.homeGraph(
     navController: NavHostController,
-    onShareClick: (url: String) -> Unit
+    playerIsVisible: Boolean,
+    navigationBarHeight: Dp
 ) {
     navigation(startDestination = Routes.Home.route, route = Routes.HomeGraph.route) {
 
@@ -64,7 +68,8 @@ private fun NavGraphBuilder.homeGraph(
                     PlaylistScreen(
                         viewModel = viewModel,
                         playlistId = it,
-                        onShareClick = onShareClick,
+                        playerIsVisible = playerIsVisible,
+                        navigationBarHeight = navigationBarHeight,
                         onBackClick = {
                             navController.popBackStack()
                         }

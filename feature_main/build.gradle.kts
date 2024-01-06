@@ -64,6 +64,8 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation)
 
+    implementation(libs.coil)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

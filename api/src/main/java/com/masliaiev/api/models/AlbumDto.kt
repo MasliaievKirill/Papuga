@@ -10,6 +10,9 @@ data class AlbumDto(
     @SerializedName("title")
     @Expose
     val title: String,
+    @SerializedName("cover_small")
+    @Expose
+    val smallCoverUrl: String?,
     @SerializedName("cover_medium")
     @Expose
     val mediumCoverUrl: String?,

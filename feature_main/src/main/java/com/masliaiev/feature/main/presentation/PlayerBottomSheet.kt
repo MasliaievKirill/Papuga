@@ -14,27 +14,26 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,22 +41,38 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.masliaiev.core.theme.Pink80
-import com.masliaiev.core.theme.Purple80
-import com.masliaiev.core.theme.PurpleGrey80
+import coil.compose.AsyncImage
+import com.masliaiev.core.constants.EmptyConstants
+import com.masliaiev.core.models.Album
+import com.masliaiev.core.models.Artist
+import com.masliaiev.core.models.Track
+import com.masliaiev.core.theme.Magnolia
 import com.masliaiev.core.R as RCore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerBottomSheet(
     bottomSheetState: SheetState,
-    maxHeight: Dp
+    maxHeight: Dp,
+    currentTrack: Track?,
+    isPlaying: Boolean,
+    playPauseAvailable: Boolean,
+    seekToNextAvailable: Boolean,
+    seekToPreviousAvailable: Boolean,
+    trackFullDuration: String,
+    trackCurrentDuration: String,
+    progress: Float,
+    playOrPause: () -> Unit,
+    seekToNext: () -> Unit,
+    seekToPrevious: () -> Unit,
+    onSliderValueChange: (Float) -> Unit,
+    onSliderValueChangeFinished: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(maxHeight)
-            .background(Pink80),
+            .background(Magnolia)
+            .height(maxHeight),
         contentAlignment = Alignment.TopCenter
     ) {
 
@@ -66,40 +81,59 @@ fun PlayerBottomSheet(
             enter = slideInVertically(),
             exit = fadeOut()
         ) {
-            Row(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .background(Pink80),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Box(
+            Column {
+                Row(
                     modifier = Modifier
-                        .size(50.dp)
-                        .background(Color.Blue)
-                )
-                Column(
-                    modifier = Modifier.weight(1f)
+                        .padding(8.dp)
+                        .background(Magnolia),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text(
-                        text = "Title",
-                        modifier = Modifier,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
+                    AsyncImage(
+                        modifier = Modifier.size(50.dp),
+                        model = currentTrack?.album?.smallCoverUrl,
+                        contentDescription = EmptyConstants.EMPTY_STRING,
+                        contentScale = ContentScale.Crop
                     )
-                    Text(
-                        text = "Kirill Masliaiev",
-                        modifier = Modifier,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = currentTrack?.title ?: "",
+                            modifier = Modifier,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                        Text(
+                            text = currentTrack?.artist?.name ?: "",
+                            modifier = Modifier,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                    }
+                    if (playPauseAvailable) {
+                        IconButton(
+                            modifier = Modifier.size(40.dp),
+                            onClick = playOrPause
+                        ) {
+                            Icon(
+                                painter = painterResource(
+                                    id = if (isPlaying) {
+                                        RCore.drawable.ic_pause
+                                    } else {
+                                        RCore.drawable.ic_play
+                                    }
+                                ),
+                                contentDescription = null
+                            )
+                        }
+                    }
                 }
-                Icon(
-                    modifier = Modifier.size(40.dp),
-                    imageVector = Icons.Filled.PlayArrow,
-                    contentDescription = null
+                LinearProgressIndicator(
+                    modifier = Modifier.fillMaxWidth(),
+                    progress = progress
                 )
             }
         }
@@ -112,7 +146,6 @@ fun PlayerBottomSheet(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(PurpleGrey80)
                     .statusBarsPadding()
             ) {
                 Box(
@@ -140,16 +173,16 @@ fun PlayerBottomSheet(
                             .aspectRatio(1f),
                         shape = RoundedCornerShape(16.dp)
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Blue)
+                        AsyncImage(
+                            modifier = Modifier.fillMaxSize(),
+                            model = currentTrack?.album?.bigCoverUrl,
+                            contentDescription = EmptyConstants.EMPTY_STRING,
+                            contentScale = ContentScale.Crop
                         )
                     }
 
-
                     Text(
-                        text = "Title",
+                        text = currentTrack?.title ?: "",
                         modifier = Modifier
                             .padding(top = 40.dp)
                             .fillMaxWidth(),
@@ -159,89 +192,84 @@ fun PlayerBottomSheet(
                         maxLines = 1
                     )
                     Text(
-                        text = "Kirill Masliaiev",
+                        text = currentTrack?.artist?.name ?: "",
                         modifier = Modifier.fillMaxWidth(),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
                     )
-                }
-                Card(
-                    modifier = Modifier
-                        .padding(top = 60.dp),
-                    shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                ) {
-                    Box(
+                    Slider(
+                        value = progress,
+                        onValueChange = {
+                            onSliderValueChange.invoke(it)
+                        },
+                        onValueChangeFinished = {
+                            onSliderValueChangeFinished.invoke()
+                        }
+                    )
+                    Row(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .background(Pink80)
-                            .navigationBarsPadding()
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 32.dp),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
+                        Text(
+                            text = trackCurrentDuration,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                        Text(
+                            text = trackFullDuration,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 32.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            enabled = seekToPreviousAvailable,
+                            onClick = seekToPrevious
                         ) {
-                            PlayerButton(
-                                icon = painterResource(id = RCore.drawable.ic_skip_back),
-                                onClick = {
-
-                                }
+                            Icon(
+                                painter = painterResource(id = RCore.drawable.ic_skip_back),
+                                contentDescription = null
                             )
-                            Spacer(modifier = Modifier.size(32.dp))
-                            PlayerButton(
-                                icon = painterResource(id = RCore.drawable.ic_play),
-                                enableCircleShape = true,
-                                onClick = {
-
-                                }
+                        }
+                        Spacer(modifier = Modifier.size(32.dp))
+                        FilledIconButton(
+                            modifier = Modifier.size(60.dp),
+                            enabled = playPauseAvailable,
+                            onClick = playOrPause
+                        ) {
+                            Icon(
+                                painter = painterResource(
+                                    id = if (isPlaying) {
+                                        RCore.drawable.ic_pause
+                                    } else {
+                                        RCore.drawable.ic_play
+                                    }
+                                ),
+                                contentDescription = null
                             )
-                            Spacer(modifier = Modifier.size(32.dp))
-                            PlayerButton(
-                                icon = painterResource(id = RCore.drawable.ic_skip_forward),
-                                onClick = {
-
-                                }
+                        }
+                        Spacer(modifier = Modifier.size(32.dp))
+                        IconButton(
+                            enabled = seekToNextAvailable,
+                            onClick = seekToNext
+                        ) {
+                            Icon(
+                                painter = painterResource(id = RCore.drawable.ic_skip_forward),
+                                contentDescription = null
                             )
                         }
                     }
                 }
             }
-
-
         }
-
-
-    }
-}
-
-@Composable
-private fun PlayerButton(
-    icon: Painter,
-    enableCircleShape: Boolean = false,
-    enabled: Boolean = true,
-    onClick: () -> Unit
-) {
-    IconButton(
-        modifier = if (enableCircleShape) {
-            Modifier
-                .background(
-                    color = Purple80,
-                    shape = CircleShape
-                )
-        } else {
-            Modifier
-        }
-            .size(60.dp),
-        enabled = enabled,
-        onClick = { /*TODO*/ }
-    ) {
-        Icon(
-            modifier = Modifier.size(50.dp),
-            painter = icon,
-            contentDescription = null
-        )
     }
 }
 
@@ -254,6 +282,41 @@ private fun PlayerBottomSheetPreview() {
             skipPartiallyExpanded = false,
             initialValue = SheetValue.Expanded
         ),
-        maxHeight = 800.dp
+        maxHeight = 800.dp,
+        currentTrack = Track(
+            id = "131",
+            title = "Track title",
+            titleShort = "Short t",
+            preview = "",
+            shareUrl = "",
+            duration = "345",
+            explicitLyrics = true,
+            artist = Artist(
+                id = "111",
+                name = "Artist Name",
+                shareUrl = "",
+                mediumPictureUrl = null,
+                bigPictureUrl = null
+            ),
+            album = Album(
+                id = "323",
+                title = "Album title",
+                smallCoverUrl = null,
+                mediumCoverUrl = null,
+                bigCoverUrl = null
+            )
+        ),
+        isPlaying = false,
+        playPauseAvailable = true,
+        seekToNextAvailable = true,
+        seekToPreviousAvailable = false,
+        trackFullDuration = "0:30",
+        trackCurrentDuration = "0:10",
+        progress = 0.2f,
+        playOrPause = {},
+        seekToNext = {},
+        seekToPrevious = {},
+        onSliderValueChange = {},
+        onSliderValueChangeFinished = {}
     )
 }

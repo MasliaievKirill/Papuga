@@ -55,6 +55,7 @@ dependencies {
     implementation(project(path = ":core"))
     implementation(project(path = ":api"))
     implementation(project(path = ":utils"))
+    implementation(project(path = ":player"))
     implementation(project(path = ":feature_main"))
 
     implementation(libs.androidx.ktx)
@@ -77,6 +78,8 @@ dependencies {
     implementation(libs.hilt.navigation)
 
     implementation(libs.retrofit.core)
+
+    implementation(libs.androidx.media3.session)
 
     debugImplementation(libs.ui.tooling.preview)
     debugImplementation(libs.ui.test.manifest)
