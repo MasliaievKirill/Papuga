@@ -64,10 +64,10 @@ private fun NavGraphBuilder.homeGraph(
             backStackEntry.arguments?.let {
                 val playlistId = it.getString(Routes.playlistIdArgument)
 
-                playlistId?.let {
+                playlistId?.let { id ->
                     PlaylistScreen(
                         viewModel = viewModel,
-                        playlistId = it,
+                        playlistId = id,
                         playerIsVisible = playerIsVisible,
                         navigationBarHeight = navigationBarHeight,
                         onBackClick = {

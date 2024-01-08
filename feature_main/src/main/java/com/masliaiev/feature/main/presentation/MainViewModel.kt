@@ -1,7 +1,7 @@
 package com.masliaiev.feature.main.presentation
 
 import androidx.lifecycle.viewModelScope
-import com.masliaiev.core.base.BaseViewModel
+import com.masliaiev.core.ui.base.BaseViewModel
 import com.masliaiev.feature.main.domain.usecases.OnSliderValueChangeFinishedUseCase
 import com.masliaiev.feature.main.domain.usecases.OnSliderValueChangeUseCase
 import com.masliaiev.feature.main.domain.usecases.PlayOrPauseUseCase
@@ -23,61 +23,55 @@ class MainViewModel @Inject constructor(
     private val onSliderValueChangeUseCase: OnSliderValueChangeUseCase,
     private val onSliderValueChangeFinishedUseCase: OnSliderValueChangeFinishedUseCase,
     private val seekToTrackUseCase: SeekToTrackUseCase
-) : BaseViewModel<MainScreenState, MainUiEvent, MainViewModelEvent>() {
+) : BaseViewModel<MainState, MainData, MainEvent, MainEffect>() {
 
     init {
+        subscribeOnPlayerUpdates()
+    }
+
+    override fun provideInitialUiModel() = MainState.ShowContent and MainData.default()
+
+    override fun onEvent(event: MainEvent) {
+        when (event) {
+            is MainEvent.PlayOrPause -> playOrPauseUseCase.playOrPause()
+            is MainEvent.SeekToNext -> seekToNextUseCase.seekToNext()
+            is MainEvent.SeekToPrevious -> seekToPreviousUseCase.seekToPrevious()
+            is MainEvent.OnPlayerSliderValueChange -> {
+                onSliderValueChangeUseCase.onSliderValueChange(
+                    event.progress
+                )
+            }
+
+            is MainEvent.OnPlayerSliderValueChangeFinished -> {
+                onSliderValueChangeFinishedUseCase.onSliderValueChangeFinished()
+            }
+
+            is MainEvent.SeekToTrack -> seekToTrackUseCase.seekToTrack(event.index)
+        }
+    }
+
+    private fun subscribeOnPlayerUpdates() {
         playerStateFlowUseCase.playerStateFlow
             .onEach { playerState ->
-                updateState { currentState ->
-                    currentState.value?.let {
-                        currentState.value = it.copy(
-                            track = playerState.track,
-                            isPlaying = playerState.isPlaying,
-                            playPauseAvailable = playerState.playPauseAvailable,
-                            seekToNextAvailable = playerState.seekToNextAvailable,
-                            seekToPreviousAvailable = playerState.seekToPreviousAvailable,
-                            currentTrackFullDuration = playerState.fullDuration,
-                            currentTrackCurrentDuration = playerState.currentDuration,
-                            progress = playerState.progress
-                        )
-                    } ?: run {
-                        currentState.value = MainScreenState(
-                            track = playerState.track,
-                            isPlaying = playerState.isPlaying,
-                            playPauseAvailable = playerState.playPauseAvailable,
-                            seekToNextAvailable = playerState.seekToNextAvailable,
-                            seekToPreviousAvailable = playerState.seekToPreviousAvailable,
-                            currentTrackFullDuration = playerState.fullDuration,
-                            currentTrackCurrentDuration = playerState.currentDuration,
-                            progress = playerState.progress
-                        )
-                    }
+                updateUiModelData { currentData ->
+                    currentData.copy(
+                        track = playerState.track,
+                        isPlaying = playerState.isPlaying,
+                        playPauseAvailable = playerState.playPauseAvailable,
+                        seekToNextAvailable = playerState.seekToNextAvailable,
+                        seekToPreviousAvailable = playerState.seekToPreviousAvailable,
+                        currentTrackFullDuration = playerState.fullDuration,
+                        currentTrackCurrentDuration = playerState.currentDuration,
+                        progress = playerState.progress
+                    )
+
                 }
                 playerState.errorMessage?.let {
-                    sendViewModelEvent(
-                        MainViewModelEvent.ShowPlayerErrorToast(it)
+                    sendEffect(
+                        MainEffect.ShowPlayerErrorToast(it)
                     )
                 }
             }
             .launchIn(viewModelScope)
-    }
-
-    override fun onUiEvent(uiEvent: MainUiEvent) {
-        when (uiEvent) {
-            is MainUiEvent.PlayOrPause -> playOrPauseUseCase.playOrPause()
-            is MainUiEvent.SeekToNext -> seekToNextUseCase.seekToNext()
-            is MainUiEvent.SeekToPrevious -> seekToPreviousUseCase.seekToPrevious()
-            is MainUiEvent.OnPlayerSliderValueChange -> {
-                onSliderValueChangeUseCase.onSliderValueChange(
-                    uiEvent.progress
-                )
-            }
-
-            is MainUiEvent.OnPlayerSliderValueChangeFinished -> {
-                onSliderValueChangeFinishedUseCase.onSliderValueChangeFinished()
-            }
-
-            is MainUiEvent.SeekToTrack -> seekToTrackUseCase.seekToTrack(uiEvent.index)
-        }
     }
 }

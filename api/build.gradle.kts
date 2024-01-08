@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.secrets.gradle.plugin)
+    alias(libs.plugins.org.jetbrains.kotlin.kapt)
 }
 
 android {
@@ -43,4 +44,6 @@ dependencies {
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.conveter)
     implementation(libs.okhttp3.logging.interceptor)
+    implementation(libs.hilt)
+    kapt(libs.hilt.compiler)
 }

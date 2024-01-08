@@ -46,7 +46,7 @@ import com.masliaiev.core.constants.EmptyConstants
 import com.masliaiev.core.models.Album
 import com.masliaiev.core.models.Artist
 import com.masliaiev.core.models.Track
-import com.masliaiev.core.theme.Magnolia
+import com.masliaiev.core.ui.theme.Magnolia
 import com.masliaiev.core.R as RCore
 
 @OptIn(ExperimentalMaterial3Api::class)

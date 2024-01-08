@@ -77,8 +77,6 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation)
 
-    implementation(libs.retrofit.core)
-
     implementation(libs.androidx.media3.session)
 
     debugImplementation(libs.ui.tooling.preview)

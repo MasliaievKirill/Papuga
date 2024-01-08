@@ -1,4 +1,4 @@
-package com.masliaiev.papuga.di
+package com.masliaiev.api.di
 
 import com.masliaiev.api.ApiFactory
 import com.masliaiev.api.ApiService
@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface DataModule {
+interface ApiModule {
 
     companion object {
         @Provides

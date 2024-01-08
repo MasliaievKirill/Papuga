@@ -2,12 +2,10 @@ package com.masliaiev.feature.playlist.domain.repository
 
 import com.masliaiev.core.models.Playlist
 import com.masliaiev.core.models.Track
-import com.masliaiev.core.models.response.Error
-import com.masliaiev.core.models.response.NetworkResponse
 
 interface PlaylistRepository {
 
-    suspend fun getPlayList(playlistId: String): NetworkResponse<Playlist, Error>
+    suspend fun getPlayList(playlistId: String): Result<Playlist?>
 
     fun playTrack(track: Track)
 

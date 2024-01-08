@@ -1,7 +1,7 @@
-package com.masliaiev.papuga.di
+package com.masliaiev.player.di
 
 import com.masliaiev.core.models.player.Player
-import com.masliaiev.papuga.player.PlayerImpl
+import com.masliaiev.player.PlayerImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

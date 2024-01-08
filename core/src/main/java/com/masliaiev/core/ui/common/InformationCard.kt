@@ -1,4 +1,4 @@
-package com.masliaiev.core.ui
+package com.masliaiev.core.ui.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
-import com.masliaiev.core.theme.Small
+import com.masliaiev.core.ui.theme.Small
 
 @Composable
 fun InformationCard(

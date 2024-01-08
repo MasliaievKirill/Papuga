@@ -3,7 +3,6 @@ package com.masliaiev.feature.home.data.pagesource
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.masliaiev.core.models.Playlist
-import com.masliaiev.core.models.response.Error
 import com.masliaiev.feature.home.data.provider.HomeApiProvider
 
 class PlaylistsPageSource(
@@ -41,24 +40,22 @@ class PlaylistsPageSource(
     ): LoadResult<Int, Playlist> {
         val countriesWithIs = provider.getCountriesWithId()
         val playlists = mutableListOf<Playlist>()
-        var error: Error? = null
+        var throwable: Throwable? = null
         countriesWithIs.forEachIndexed { index, id ->
             if (index in startIndex..endIndex) {
                 provider.getPlayLists(id)
-                    .onSuccess {
-                        playlists.add(it)
+                    .onSuccess { playlist ->
+                        playlist?.let {
+                            playlists.add(it)
+                        }
                     }
-                    .onError {
-                        error = it
+                    .onFailure {
+                        throwable = it
                     }
             }
         }
-        return error?.let {
-            LoadResult.Error(
-                Throwable(
-                    message = "${it.code} ${it.message}"
-                )
-            )
+        return throwable?.let {
+            LoadResult.Error(it)
         } ?: run {
             LoadResult.Page(
                 data = playlists,

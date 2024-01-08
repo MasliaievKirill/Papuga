@@ -1,4 +1,4 @@
-package com.masliaiev.core.theme
+package com.masliaiev.core.ui.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
