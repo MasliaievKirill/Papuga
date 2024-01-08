@@ -1,4 +1,4 @@
-package com.masliaiev.papuga.player
+package com.masliaiev.player
 
 import android.content.ComponentName
 import android.content.Context
@@ -18,9 +18,9 @@ import com.masliaiev.core.extensions.toFormattedSeconds
 import com.masliaiev.core.models.Track
 import com.masliaiev.core.models.player.Player
 import com.masliaiev.core.models.player.PlayerState
-import com.masliaiev.papuga.mappers.toMediaItem
-import com.masliaiev.papuga.mappers.toTrack
-import com.masliaiev.player.PlayerService
+import com.masliaiev.player.mappers.toMediaItem
+import com.masliaiev.player.mappers.toTrack
+import com.masliaiev.player.models.PlayerParams
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

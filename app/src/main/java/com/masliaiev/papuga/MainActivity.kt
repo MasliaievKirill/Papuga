@@ -3,9 +3,9 @@ package com.masliaiev.papuga
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.core.view.WindowCompat
+import androidx.activity.enableEdgeToEdge
 import com.masliaiev.core.models.player.Player
-import com.masliaiev.core.theme.PapugaTheme
+import com.masliaiev.core.ui.theme.PapugaTheme
 import com.masliaiev.papuga.navigation.AppRootNavigation
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -17,8 +17,8 @@ class MainActivity : ComponentActivity() {
     lateinit var player: Player
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             PapugaTheme {
                 AppRootNavigation()

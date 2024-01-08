@@ -48,4 +48,5 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling)
     implementation(libs.material3)
+    implementation(libs.retrofit.core)
 }

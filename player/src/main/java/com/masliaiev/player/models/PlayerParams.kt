@@ -1,4 +1,4 @@
-package com.masliaiev.papuga.player
+package com.masliaiev.player.models
 
 import com.masliaiev.core.constants.EmptyConstants
 import com.masliaiev.core.models.Track

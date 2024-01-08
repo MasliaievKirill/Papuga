@@ -1,7 +1,8 @@
 package com.masliaiev.feature.playlist.presentation
 
-import com.masliaiev.core.base.BaseViewModel
 import com.masliaiev.core.models.Track
+import com.masliaiev.core.ui.base.BaseViewModel
+import com.masliaiev.core.ui.base.NoEffect
 import com.masliaiev.feature.playlist.domain.usecases.GetPlaylistUseCase
 import com.masliaiev.feature.playlist.domain.usecases.PlayPlaylistUseCase
 import com.masliaiev.feature.playlist.domain.usecases.PlayTrackUseCase
@@ -13,28 +14,32 @@ class PlaylistViewModel @Inject constructor(
     private val getPlaylistUseCase: GetPlaylistUseCase,
     private val playTrackUseCase: PlayTrackUseCase,
     private val playPlaylistUseCase: PlayPlaylistUseCase
-) : BaseViewModel<PlaylistScreenState, PlaylistUiEvent, PlaylistViewModelEvent>() {
+) : BaseViewModel<PlaylistState, PlaylistData, PlaylistEvent, NoEffect>() {
 
-    override fun onUiEvent(uiEvent: PlaylistUiEvent) {
-        when (uiEvent) {
-            is PlaylistUiEvent.LoadPlaylist -> loadPlaylist(uiEvent.playlistId)
-            is PlaylistUiEvent.OnTrackClick -> onTrackClick(uiEvent.track)
-            is PlaylistUiEvent.OnPlayPlaylistClick -> onPlayPlaylistClick(uiEvent.trackList)
+    override fun provideInitialUiModel() = PlaylistState.DataLoading and PlaylistData.default()
+
+    override fun onEvent(event: PlaylistEvent) {
+        when (event) {
+            is PlaylistEvent.LoadPlaylist -> loadPlaylist(event.playlistId)
+            is PlaylistEvent.OnTrackClick -> onTrackClick(event.track)
+            is PlaylistEvent.OnPlayPlaylistClick -> onPlayPlaylistClick(event.trackList)
         }
     }
 
     private fun loadPlaylist(playlistId: String) {
         launch {
             getPlaylistUseCase.getPlayList(playlistId)
-                .onSuccess {
-                    updateState { currentState ->
-                        currentState.value = PlaylistScreenState(
-                            playlist = it
-                        )
-                    }
-                }
-                .onError {
-                    sendViewModelEvent(PlaylistViewModelEvent.PlaylistLoadingError)
+                .onSuccess { playlist ->
+                    updateUiModel(
+                        state = {
+                            PlaylistState.DataLoaded
+                        },
+                        data = {
+                            it.copy(
+                                playlist = playlist
+                            )
+                        }
+                    )
                 }
         }
     }

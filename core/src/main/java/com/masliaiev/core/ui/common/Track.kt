@@ -1,4 +1,4 @@
-package com.masliaiev.core.ui
+package com.masliaiev.core.ui.common
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -27,9 +27,9 @@ import com.masliaiev.core.constants.EmptyConstants
 import com.masliaiev.core.models.Album
 import com.masliaiev.core.models.Artist
 import com.masliaiev.core.models.Track
-import com.masliaiev.core.theme.ExtraSmall
-import com.masliaiev.core.theme.Medium
-import com.masliaiev.core.theme.Small
+import com.masliaiev.core.ui.theme.ExtraSmall
+import com.masliaiev.core.ui.theme.Medium
+import com.masliaiev.core.ui.theme.Small
 
 @Composable
 fun Track(
@@ -78,7 +78,7 @@ fun Track(
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        if (track.explicitLyrics == true) {
+                        if (track.explicitLyrics) {
                             Icon(
                                 modifier = Modifier
                                     .padding(end = ExtraSmall)

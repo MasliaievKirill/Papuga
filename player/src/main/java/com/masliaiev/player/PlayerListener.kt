@@ -1,10 +1,11 @@
-package com.masliaiev.papuga.player
+package com.masliaiev.player
 
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import com.masliaiev.core.models.Track
-import com.masliaiev.papuga.mappers.toTrack
+import com.masliaiev.player.mappers.toTrack
+import com.masliaiev.player.models.PlayerParams
 import javax.inject.Inject
 
 class PlayerListener @Inject constructor() : Player.Listener {

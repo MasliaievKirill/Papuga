@@ -39,15 +39,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
-import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
-import com.masliaiev.core.base.BaseScreen
 import com.masliaiev.core.models.Playlist
+import com.masliaiev.core.ui.base.BaseScreen
 import com.masliaiev.feature.home.R
-import kotlinx.coroutines.flow.Flow
 import com.masliaiev.core.R as RCore
 
 @Composable
@@ -57,24 +54,21 @@ fun HomeScreen(
 ) {
     BaseScreen(
         viewModel = viewModel,
-        handleViewModelEvent = {
-            //TODO handle event
-        }
-    ) { screenState ->
-        screenState?.let {
+        content = { state, data ->
             HomeScreenContent(
-                playlists = screenState.playlists,
+                state = state,
+                data = data,
                 onPlaylistClick = onPlaylistClick
             )
         }
-
-    }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeScreenContent(
-    playlists: Flow<PagingData<Playlist>>?,
+    state: HomeState,
+    data: HomeData,
     onPlaylistClick: (playlistId: String) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -114,36 +108,40 @@ private fun HomeScreenContent(
 
         ) { paddingValues ->
 
-        playlists?.let {
-            val lazyPagingItems = playlists.collectAsLazyPagingItems()
+        when (state) {
+            HomeState.DataLoaded -> {
+                data.playlists?.let {
+                    val lazyPagingItems = it.collectAsLazyPagingItems()
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = paddingValues.calculateTopPadding()),
-                contentAlignment = Alignment.Center
-            ) {
-                if (lazyPagingItems.loadState.refresh == LoadState.Loading){
-                    CircularProgressIndicator()
-                } else {
-                    LazyVerticalGrid(
+                    Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 8.dp),
-                        columns = GridCells.Fixed(2),
-                        contentPadding = WindowInsets.systemBars.asPaddingValues()
+                            .padding(top = paddingValues.calculateTopPadding()),
+                        contentAlignment = Alignment.Center
                     ) {
-                        items(
-                            count = lazyPagingItems.itemCount
-                        ) { index ->
-                            // As the standard items call provides only the index, we get the item
-                            // directly from our lazyPagingItems
-                            val item = lazyPagingItems[index]
-                            item?.let {
-                                Playlist(
-                                    playlist = it,
-                                    onPlaylistClick = onPlaylistClick
-                                )
+                        if (lazyPagingItems.loadState.refresh == LoadState.Loading) {
+                            CircularProgressIndicator()
+                        } else {
+                            LazyVerticalGrid(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 8.dp),
+                                columns = GridCells.Fixed(2),
+                                contentPadding = WindowInsets.systemBars.asPaddingValues()
+                            ) {
+                                items(
+                                    count = lazyPagingItems.itemCount
+                                ) { index ->
+                                    // As the standard items call provides only the index, we get the item
+                                    // directly from our lazyPagingItems
+                                    val item = lazyPagingItems[index]
+                                    item?.let {
+                                        Playlist(
+                                            playlist = it,
+                                            onPlaylistClick = onPlaylistClick
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
@@ -151,8 +149,6 @@ private fun HomeScreenContent(
             }
         }
     }
-
-
 }
 
 @Composable
@@ -232,7 +228,8 @@ private fun Playlist(
 @Composable
 private fun MainScreenPreview() {
     HomeScreenContent(
-        playlists = null,
+        state = HomeState.DataLoaded,
+        data = HomeData.default(),
         onPlaylistClick = {}
     )
 }

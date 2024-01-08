@@ -3,8 +3,6 @@ package com.masliaiev.feature.playlist.data.repository
 import com.masliaiev.core.models.Playlist
 import com.masliaiev.core.models.Track
 import com.masliaiev.core.models.player.Player
-import com.masliaiev.core.models.response.Error
-import com.masliaiev.core.models.response.NetworkResponse
 import com.masliaiev.feature.playlist.data.provider.PlaylistApiProvider
 import com.masliaiev.feature.playlist.domain.repository.PlaylistRepository
 import javax.inject.Inject
@@ -14,7 +12,7 @@ class PlaylistRepositoryImpl @Inject constructor(
     private val player: Player
 ) : PlaylistRepository {
 
-    override suspend fun getPlayList(playlistId: String): NetworkResponse<Playlist, Error> {
+    override suspend fun getPlayList(playlistId: String): Result<Playlist?> {
         return provider.getPlayList(playlistId)
     }
 
