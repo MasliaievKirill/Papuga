@@ -79,6 +79,8 @@ dependencies {
 
     implementation(libs.androidx.media3.session)
 
+    implementation(libs.retrofit.core)
+
     debugImplementation(libs.ui.tooling.preview)
     debugImplementation(libs.ui.test.manifest)
 }

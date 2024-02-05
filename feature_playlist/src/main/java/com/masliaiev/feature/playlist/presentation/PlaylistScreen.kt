@@ -247,6 +247,7 @@ private fun PlaylistScreenContent(
                             itemsIndexed(data.playlist.tracks.data) { index, track ->
                                 Track(
                                     track = track,
+                                    isPlaying = track.id == data.currentTrack?.id && data.playerIsPlaying,
                                     index = index,
                                     onClick = {
                                         onEvent.invoke(
@@ -407,7 +408,9 @@ private fun MainScreenPreview() {
                         )
                     )
                 )
-            )
+            ),
+            currentTrack = null,
+            playerIsPlaying = false
         ),
         playlistId = "",
         playerIsVisible = false,

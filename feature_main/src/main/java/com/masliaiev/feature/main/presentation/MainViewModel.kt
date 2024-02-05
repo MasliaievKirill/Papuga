@@ -10,6 +10,7 @@ import com.masliaiev.feature.main.domain.usecases.SeekToNextUseCase
 import com.masliaiev.feature.main.domain.usecases.SeekToPreviousUseCase
 import com.masliaiev.feature.main.domain.usecases.SeekToTrackUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -56,6 +57,7 @@ class MainViewModel @Inject constructor(
                 updateUiModelData { currentData ->
                     currentData.copy(
                         track = playerState.track,
+                        playlist = playerState.playlist?.toImmutableList(),
                         isPlaying = playerState.isPlaying,
                         playPauseAvailable = playerState.playPauseAvailable,
                         seekToNextAvailable = playerState.seekToNextAvailable,
@@ -64,7 +66,6 @@ class MainViewModel @Inject constructor(
                         currentTrackCurrentDuration = playerState.currentDuration,
                         progress = playerState.progress
                     )
-
                 }
                 playerState.errorMessage?.let {
                     sendEffect(

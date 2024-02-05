@@ -13,12 +13,16 @@ sealed class PlaylistState : UiModel.State {
 }
 
 data class PlaylistData(
-    val playlist: Playlist?
+    val playlist: Playlist?,
+    val currentTrack: Track?,
+    val playerIsPlaying: Boolean
 ) : UiModel.Data {
 
     companion object {
         fun default() = PlaylistData(
-            playlist = null
+            playlist = null,
+            currentTrack = null,
+            playerIsPlaying = false
         )
     }
 }
