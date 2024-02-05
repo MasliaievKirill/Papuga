@@ -52,6 +52,7 @@ import com.masliaiev.core.ui.theme.Magnolia
 import com.masliaiev.feature.main.R
 import com.masliaiev.feature.main.presentation.navigation.NavigationGraph
 import com.masliaiev.feature.main.presentation.navigation.Routes
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun MainScreen(
@@ -119,6 +120,7 @@ private fun MainScreenContent(
                                 )
                             },
                             currentTrack = data.track,
+                            playlist = data.playlist,
                             isPlaying = data.isPlaying,
                             playPauseAvailable = data.playPauseAvailable,
                             seekToNextAvailable = data.seekToNextAvailable,
@@ -276,6 +278,31 @@ private fun MainScreenPreview() {
                     bigCoverUrl = null
                 )
             ),
+            playlist = listOf(
+                Track(
+                    id = "131",
+                    title = "Track title",
+                    titleShort = "Short t",
+                    preview = "",
+                    shareUrl = "",
+                    duration = "345",
+                    explicitLyrics = true,
+                    artist = Artist(
+                        id = "111",
+                        name = "Artist Name",
+                        shareUrl = "",
+                        mediumPictureUrl = null,
+                        bigPictureUrl = null
+                    ),
+                    album = Album(
+                        id = "323",
+                        title = "Album title",
+                        smallCoverUrl = null,
+                        mediumCoverUrl = null,
+                        bigCoverUrl = null
+                    )
+                )
+            ).toImmutableList(),
             isPlaying = false,
             playPauseAvailable = true,
             seekToNextAvailable = true,

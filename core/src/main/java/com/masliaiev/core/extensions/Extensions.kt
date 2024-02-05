@@ -12,11 +12,11 @@ fun Bundle?.getStringOrEmpty(key: String): String {
 }
 
 fun Duration.toFormattedSeconds(): String {
-    return this.toComponents { seconds, _ ->
-        if (seconds < TEN_SECONDS) {
-            ONE_NUMBER_TIME_FORMAT + seconds
+    return this.inWholeSeconds.toInt().let {
+        if (it < TEN_SECONDS) {
+            ONE_NUMBER_TIME_FORMAT + it
         } else {
-            TWO_NUMBER_TIME_FORMAT + seconds
+            TWO_NUMBER_TIME_FORMAT + it
         }
     }
 }

@@ -5,6 +5,7 @@ import com.masliaiev.core.models.Track
 import com.masliaiev.core.ui.base.Effect
 import com.masliaiev.core.ui.base.Event
 import com.masliaiev.core.ui.base.UiModel
+import kotlinx.collections.immutable.ImmutableList
 
 sealed class MainState : UiModel.State {
 
@@ -13,6 +14,7 @@ sealed class MainState : UiModel.State {
 
 data class MainData(
     val track: Track?,
+    val playlist: ImmutableList<Track>?,
     val currentTrackFullDuration: String,
     val currentTrackCurrentDuration: String,
     val isPlaying: Boolean,
@@ -24,6 +26,7 @@ data class MainData(
     companion object {
         fun default() = MainData(
             track = null,
+            playlist = null,
             currentTrackFullDuration = EmptyConstants.EMPTY_STRING,
             currentTrackCurrentDuration = EmptyConstants.EMPTY_STRING,
             isPlaying = false,

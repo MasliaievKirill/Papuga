@@ -5,13 +5,16 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import com.masliaiev.core.models.Track
 import com.masliaiev.player.mappers.toTrack
-import com.masliaiev.player.models.PlayerParams
 import javax.inject.Inject
 
 class PlayerListener @Inject constructor() : Player.Listener {
 
     private var onTrackChanged: ((track: Track) -> Unit)? = null
-    private var onPlayerCommandsChanged: ((commands: PlayerParams.PlayerCommands) -> Unit)? = null
+    private var onPlayerCommandsChanged: ((
+        playPauseAvailable: Boolean,
+        seekToNextAvailable: Boolean,
+        seekToPreviousAvailable: Boolean
+    ) -> Unit)? = null
     private var onIsPlayingChanged: ((isPlaying: Boolean) -> Unit)? = null
     private var onIsLoadingChanged: ((isLoading: Boolean) -> Unit)? = null
     private var onPlayerError: ((errorMassage: String) -> Unit)? = null
@@ -24,11 +27,9 @@ class PlayerListener @Inject constructor() : Player.Listener {
     override fun onAvailableCommandsChanged(availableCommands: Player.Commands) {
         super.onAvailableCommandsChanged(availableCommands)
         onPlayerCommandsChanged?.invoke(
-            PlayerParams.PlayerCommands(
-                playPauseAvailable = availableCommands.contains(Player.COMMAND_PLAY_PAUSE),
-                seekToNextAvailable = availableCommands.contains(Player.COMMAND_SEEK_TO_NEXT),
-                seekToPreviousAvailable = availableCommands.contains(Player.COMMAND_SEEK_TO_PREVIOUS)
-            )
+            availableCommands.contains(Player.COMMAND_PLAY_PAUSE),
+            availableCommands.contains(Player.COMMAND_SEEK_TO_NEXT),
+            availableCommands.contains(Player.COMMAND_SEEK_TO_PREVIOUS)
         )
     }
 
@@ -52,7 +53,13 @@ class PlayerListener @Inject constructor() : Player.Listener {
         onTrackChanged = block
     }
 
-    fun onPlayerCommandsChanged(block: (commands: PlayerParams.PlayerCommands) -> Unit) {
+    fun onPlayerCommandsChanged(
+        block: (
+            playPauseAvailable: Boolean,
+            seekToNextAvailable: Boolean,
+            seekToPreviousAvailable: Boolean
+        ) -> Unit
+    ) {
         onPlayerCommandsChanged = block
     }
 

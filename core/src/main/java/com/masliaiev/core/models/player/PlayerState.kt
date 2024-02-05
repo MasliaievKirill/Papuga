@@ -5,6 +5,7 @@ import com.masliaiev.core.models.Track
 
 data class PlayerState (
     val track: Track? = null,
+    val playlist: List<Track>? = null,
     val fullDuration: String = EmptyConstants.EMPTY_STRING,
     val currentDuration: String = EmptyConstants.EMPTY_STRING,
     val isPlaying: Boolean = false,
